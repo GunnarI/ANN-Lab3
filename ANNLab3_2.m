@@ -7,27 +7,28 @@ clear all; close all; clc;
 
 data = load('pict.dat');
 p = zeros(length(data)/1024,1024);
+%convert data into different patterns per line
 for n = 1:length(data)/1024
     p(n,:) = data(n*1024 - 1023:n*1024);
 end
 %learning data is only the first three patterns
 p_learn = p(1:3,:);             %contains the first three pattern
-%degraded data
+
+%degraded and mixed data
 p_deg = p(10,:);
 p_mix = p(11,:);
 
 %initialize weights
 W = zeros(size(p_learn,2),size(p_learn,2));
-%W = zeros(size(input,1),size(input,2));             %fixed for 3D data already
 
 %% Hebbian learning
 
 % Calculate weight matrix for learning
-for i = 1:size(p,2)%*size(x,1)                   %fixed for 3D data already
+for i = 1:size(p,2)
     for j = 1:size(p,2)
         weight = 0;
-        if i ~= j                                %If this is taken away, a good solution is found
-            for n = 1:size(p_learn,1)
+        if i ~= j                                %make diagonal zero
+            for n = 1:size(p_learn,1)            %number of input patterns (mu)
                 weight = p_learn(n,i) .* p_learn(n,j) + weight;
             end
         end
@@ -50,24 +51,30 @@ equality(p_learn,out_p_learn);
 %% Plot the pictures for check of stability
 
 %create_pic(p_learn(1,:));  %picture number p1
-%create_pic(out_p_learn(1,:));  %picture number p1 as output (saved pattern)
-create_pic(out_p_learn(2,:));  %picture number p2 as output (saved pattern)
-create_pic(out_p_learn(3,:));  %picture number p3 as output (saved pattern)
+create_pic(out_p_learn(1,:));  %picture number p1 as output (saved pattern)
+%create_pic(out_p_learn(2,:));  %picture number p2 as output (saved pattern)
+%create_pic(out_p_learn(3,:));  %picture number p3 as output (saved pattern)
 
 %% Degraded data
 %Look if it is working with the degraded data
 n_pattern = size(p_deg,1);                    %number of patterns
 matrix_size = size(p_deg);
 
-%first loop uses input, then it reuses the output from before
+%first loop uses input
 i = 1; %works already after 1. cycle
 out_deg(:,:,i) = recall(p_deg,n_pattern,matrix_size,W);
 fprintf('\nFor the degraded patterns (1. cycle):\n')
 equality(p_learn(1,:),out_deg(:,:,i));
 
+%use random units and the original sequential hopfield dynamics
+i = 1; %works already after 1. cycle
+rout_deg(:,:,i) = rand_recall(p_deg,n_pattern,matrix_size,W);
+fprintf('\nFor the degraded patterns random (1. cycle):\n')
+equality(p_learn(1,:),rout_deg(:,:,i));
+
 %plot the birdies (degraded and recognized)
 %create_pic(p_deg(1,:));  %picture of degraded data
-%create_pic(out_deg(:,:,1));  %picture number p1 as output
+create_pic(rout_deg(:,:,1));  %picture number p1 as output
 
 %% Mixed Type data
 %Look if it is working with the degraded data
