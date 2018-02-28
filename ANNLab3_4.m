@@ -32,7 +32,7 @@ end
 
 n_pattern = size(p_learn,1);                    %number of patterns
 matrix_size = size(p_learn);
-%check if learning was succesfull
+%check if learning was succesfull by having the p_learn as input
 out_p_learn = recall(p_learn,n_pattern,matrix_size,W);
 
 %check for equality of input and output of recall
@@ -41,36 +41,45 @@ fprintf('For the learning function:\n')
 equality(p_learn,out_p_learn);
 
 %% Plot to check if it the same
-create_pic(out_p_learn(1,:));  %picture number p1 as output (saved pattern)
+%create_pic(out_p_learn(1,:));  %picture number p1 as output (saved pattern)
 
 %% create randomly noisy data
-%want to create 10 different noisy data for p1, from 0% to 100% jumping on
-%10% = 11 different vectors.
 
-% For 10%: I first need to find how many 10% units are,
-ten_perc_nr = round(0.1 * length(p_learn(1,:)));
 
-% To flip them I can multiply specific values by -1.
 
-%pull 102 random numbers from 1:1024
-p_length_int = 1:length(p_learn);
-random_int = randsample(p_length_int,ten_perc_nr);
-
-%initialize the new noisy vector
-p1_10perc_noise = p_learn(1,:);
-
-%Change the randomly selected data
-for i = 1:ten_perc_nr
-    p1_10perc_noise(random_int(i)) = p1_10perc_noise(random_int(i))*-1;
-end
+%Use the function p3_4_CreateNoise to create 10 vectors with noise ranging
+%from 10% to 100%.
+p1_noise = p3_4_CreateNoise(p_learn(1,:));
+p2_noise = p3_4_CreateNoise(p_learn(2,:));
+p3_noise = p3_4_CreateNoise(p_learn(3,:));
 
 %evaluate the new data
-i=1;
-n_pattern = size(p1_10perc_noise,1);                    %number of patterns
-matrix_size = size(p1_10perc_noise);
-out_mix(:,:,i) = recall(p1_10perc_noise,n_pattern,matrix_size,W);
 
-equality(p_learn(1,:),out_mix);
-%Got patterns are stored and right so it is ok for 10perc.
+% i=1;
+% n_pattern = size(output(1,:),1);                    %number of patterns
+% matrix_size = size(output(1,:));
+% out_mix(:,:,i) = recall(output(6,:),n_pattern,matrix_size,W);
+% 
+% equality(p_learn(1,:),out_mix);
 
+%Use the function p3_4_CheckNoise to use the noisy data as input and return
+%the output and the error of how many values were wrong for each
+
+%one iteration
+[p1_noise_output, p1_error] = p3_4_CheckNoise(p1_noise,p_learn(1,:), W);
+[p2_noise_output, p2_error] = p3_4_CheckNoise(p2_noise,p_learn(2,:), W);
+[p3_noise_output, p3_error] = p3_4_CheckNoise(p3_noise,p_learn(3,:), W);
+
+p1_noise_output_new = p1_noise_output;
+p2_noise_output_new = p2_noise_output;
+p3_noise_output_new = p3_noise_output;
+
+%many iterations:
+for i = 1:10
+[p1_noise_output_new, p1_error_new] = p3_4_CheckNoise(p1_noise_output_new, p_learn(1,:),W);
+[p2_noise_output_new, p2_error_new] = p3_4_CheckNoise(p2_noise_output_new,p_learn(2,:), W);
+[p3_noise_output_new, p3_error_new] = p3_4_CheckNoise(p3_noise_output_new,p_learn(3,:), W);
+end
+
+%Create a subplot(2,5,1) with all the outputs for p1, p2 and p3 with noises
     
