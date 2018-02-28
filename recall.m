@@ -1,8 +1,8 @@
-function output = recall(input,n_units,matrix_size,W)
+function output = recall(input,n_patterns,matrix_size,W)
 %%% update rule for recalling of the function
 
-output = zeros(n_units,matrix_size(2));
-for n = 1:n_units
+output = zeros(n_patterns,matrix_size(2));
+for n = 1:n_patterns
     for i = 1:matrix_size(2)
         weight = 0;
             for j = 1:matrix_size(2)
