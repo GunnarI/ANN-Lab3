@@ -6,7 +6,7 @@ for n = 1:32
 end
 
 %plot the picture
-figure
+figure(1)
 for i = 1:32
     for j = 1:32
         if picture(i,j) == 1
