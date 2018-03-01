@@ -50,10 +50,10 @@ equality(p_learn,out_p_learn);
 
 %% Plot the pictures for check of stability
 
-%create_pic(p_learn(1,:));  %picture number p1
+%create_pic(p_learn(1,:));  %picture number p1 input
 create_pic(out_p_learn(1,:));  %picture number p1 as output (saved pattern)
-%create_pic(out_p_learn(2,:));  %picture number p2 as output (saved pattern)
-%create_pic(out_p_learn(3,:));  %picture number p3 as output (saved pattern)
+create_pic(out_p_learn(2,:));  %picture number p2 as output (saved pattern)
+create_pic(out_p_learn(3,:));  %picture number p3 as output (saved pattern)
 
 %% Degraded data
 %Look if it is working with the degraded data
@@ -61,47 +61,52 @@ n_pattern = size(p_deg,1);                    %number of patterns
 matrix_size = size(p_deg);
 
 %first loop uses input
-i = 1; %works already after 1. cycle
+i = 1; %works already after 1. loop
 out_deg(:,:,i) = recall(p_deg,n_pattern,matrix_size,W);
 fprintf('\nFor the degraded patterns (1. cycle):\n')
 equality(p_learn(1,:),out_deg(:,:,i));
 
 %use random units and the original sequential hopfield dynamics
-i = 1; %works already after 1. cycle
+i = 1; %works already after 1. cycle (no difference between randomisation or not
 rout_deg(:,:,i) = rand_recall(p_deg,n_pattern,matrix_size,W);
 fprintf('\nFor the degraded patterns random (1. cycle):\n')
 equality(p_learn(1,:),rout_deg(:,:,i));
 
 %plot the birdies (degraded and recognized)
 %create_pic(p_deg(1,:));  %picture of degraded data
-create_pic(rout_deg(:,:,1));  %picture number p1 as output
+%create_pic(rout_deg(:,:,1));  %picture number p1 as output
 
 %% Mixed Type data
 %Look if it is working with the degraded data
 n_pattern = size(p_mix,1);                    %number of patterns
 matrix_size = size(p_mix);
 
+create_pic(p_mix(1,:));  %picture of mixed data as input
+
 %first loop uses input, then it reuses the output from before
 i = 1; %works already after 1. cycle
 out_mix(:,:,i) = recall(p_mix,n_pattern,matrix_size,W);
-% fprintf('\nFor the mixed pattern (1. cycle):\n')
-% fprintf('Compared to picture p2 (1. cycle):\n')
-% equality(p_learn(2,:),out_mix(:,:,i));
-% fprintf('Compared to picture p3 (1. cycle):\n')
-% equality(p_learn(3,:),out_mix(:,:,i));
 
 %create a loop for finding a number of update functions to get better
 %results
 numb_err = [1,1];
 while (numb_err(i,1) > 0) && (numb_err(i,2) > 0) && (i <= 2000)
     i = i+1
-    out_mix(:,:,i) = recall(out_mix(:,:,i-1),n_pattern,matrix_size,W);
-    numb_err(i,1) = equality(out_p_learn(2,:),out_mix(:,:,i));
-    numb_err(i,2) = equality(out_p_learn(3,:),out_mix(:,:,i));
+    %use random units and the original sequential hopfield dynamics
+    rout_mix(:,:,i) = rand_recall(p_mix,n_pattern,matrix_size,W);
     
+    numb_err(i,1) = equality(p_learn(2,:),rout_mix(:,:,i));
+    numb_err(i,2) = equality(p_learn(3,:),rout_mix(:,:,i));
+
+    if mod(i,100) == 0
+        %plot the birdies (mixed and recognized) every 100 iterations
+        %create_pic(p_deg(1,:));  %picture of degraded data
+        create_pic(rout_mix(:,:,i));  %picture number p1 as output
+        drawnow
+    end
 end
 
-%plot the pictures
-create_pic(p_mix(1,:));  %picture of degraded data
-create_pic(out_mix(:,:,i));  %picture number p1 as output
+%plot the pictures in the end
+
+%create_pic(out_mix(:,:,i));  %picture mixed version as output
 
