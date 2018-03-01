@@ -19,11 +19,11 @@ W = zeros(size(p_learn,2),size(p_learn,2));
 for i = 1:size(p,2)%*size(x,1)                   %fixed for 3D data already
     for j = 1:size(p,2)
         weight = 0;
-        if i ~= j                                %If this is taken away, a good solution is found
+        %if i ~= j                                %If this is taken away, a good solution is found
             for n = 1:size(p_learn,1)
                 weight = p_learn(n,i) .* p_learn(n,j) + weight;
             end
-        end
+       % end
         W(i,j) = weight;
     end
 end
