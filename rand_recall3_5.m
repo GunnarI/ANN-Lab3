@@ -1,4 +1,4 @@
-function [output,energy] = rand_recall(input,n_patterns,matrix_size,W)
+function [output,energy] = rand_recall3_5(input,n_patterns,matrix_size,W)
 %%% update rule for recalling of the function
 %with random units and the original sequential hopfield dynamics
 %%%#
@@ -22,7 +22,7 @@ for n = 1:n_patterns
                 %calculating energy
                 sum = W(i,j)*output(i)*output(j) + sum;
             end
-        output(n,i) = sign(weight);
+        output(n,i) = sgn(weight);
         energy(n,i) = -sum;
     end
 end
