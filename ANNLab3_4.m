@@ -75,7 +75,7 @@ p2_noise_output_new = p2_noise_output;
 p3_noise_output_new = p3_noise_output;
 
 %many iterations:
-for i = 1:10
+for i = 1:2
 [p1_noise_output_new, p1_error_new] = p3_4_CheckNoise(p1_noise_output_new, p_learn(1,:),W);
 [p2_noise_output_new, p2_error_new] = p3_4_CheckNoise(p2_noise_output_new,p_learn(2,:), W);
 [p3_noise_output_new, p3_error_new] = p3_4_CheckNoise(p3_noise_output_new,p_learn(3,:), W);
